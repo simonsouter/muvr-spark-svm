@@ -12,8 +12,8 @@ object SimpleApp {
     val sc = new SparkContext("local", "Simple App", "/Users/user/tools/spark-1.4.0-bin-hadoop2.6",
       List("target/scala-2.10/target/scala-2.10/scala-2-10_2.10-0.1-SNAPSHOT.jar"))
 
-    val data = sc.textFile("data/armsbbc.txt")
-    val splits = data.randomSplit(Array(0.6, 0.4), seed = 15l)
+    val data = sc.textFile("data/sbte.txt")
+    val splits = data.randomSplit(Array(0.7, 0.3), seed=System.currentTimeMillis())
 
     val training = splits(0).map { line =>
       val parts = line.split(',')
@@ -26,11 +26,11 @@ object SimpleApp {
     }
 
     // Run training algorithm
-    val numIterations = 50
+    val numIterations = 1
     val alg = new SVMWithSGD()
     alg.optimizer.
-      setNumIterations(numIterations)//.
-//      setRegParam(1)
+      setNumIterations(numIterations).
+      setRegParam(0.1)
 
     val model = alg.run(training)
 
